@@ -1,0 +1,28 @@
+services:
+  identity-service:
+    build:
+      context: ./IdentityService.Web
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+      - "5001:443"
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__IdentityConnection=Server=sqlserver;Database=IdentityDb;User=sa;Password=Your_password123;TrustServerCertificate=True;
+    networks:
+      - backend
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "Your_password123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - backend
+
+networks:
+  backend:
